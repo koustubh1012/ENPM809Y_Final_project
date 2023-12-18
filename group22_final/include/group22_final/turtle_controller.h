@@ -72,5 +72,6 @@ namespace group22_final{
             };
             struct marker aruco_zero_;
             struct marker aruco_one_;
+            std::vector<std::string> waypoints;
     };
 }
