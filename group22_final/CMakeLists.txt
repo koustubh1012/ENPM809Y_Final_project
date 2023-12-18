@@ -42,6 +42,14 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+add_executable(battery_tf_broadcaster src/battery_tf_broadcaster.cpp)
+ament_target_dependencies(battery_tf_broadcaster rclcpp rclcpp tf2_ros geometry_msgs tf2 tf2_geometry_msgs nav_msgs mage_msgs)
+
+install(TARGETS 
+  battery_tf_broadcaster
+  DESTINATION lib/${PROJECT_NAME}
+)
+
   # the following line skips the linter which checks for copyrights
   # uncomment the line when a copyright and license is not present in all source files
   #set(ament_cmake_copyright_FOUND TRUE)
