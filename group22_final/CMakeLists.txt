@@ -20,12 +20,28 @@ if(BUILD_TESTING)
   find_package(tf2_ros REQUIRED)
   find_package(tf2 REQUIRED)
   find_package(tf2_geometry_msgs REQUIRED)
+  find_package(ros2_aruco_interfaces REQUIRED)
+  find_package(ament_cmake_python REQUIRED)
+  find_package(nav_msgs REQUIRED)
+  find_package(mage_msgs REQUIRED)
 
+
+include_directories(include/group22_final)
 
 install(DIRECTORY
 config
+launch
 DESTINATION share/${PROJECT_NAME}/
 )
+
+add_executable(turtle_controller src/turtle_controller.cpp)
+ament_target_dependencies(turtle_controller rclcpp rclcpp ros2_aruco_interfaces)# tf2_ros geometry_msgs tf2 tf2_geometry_msgs nav_msgs mage_msgs)
+
+install(TARGETS 
+  turtle_controller
+  DESTINATION lib/${PROJECT_NAME}
+)
+
   # the following line skips the linter which checks for copyrights
   # uncomment the line when a copyright and license is not present in all source files
   #set(ament_cmake_copyright_FOUND TRUE)

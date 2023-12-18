@@ -1,0 +1,6 @@
+turtle_controller: # edit this line
+ros__parameters:
+  aruco_0:
+    wp1:
+      type: 'battery'
+      color: 'green'
