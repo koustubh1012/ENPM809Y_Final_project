@@ -62,9 +62,9 @@ namespace group22_final{
             marker_sub_ = this->create_subscription<ros2_aruco_interfaces::msg::ArucoMarkers>("aruco_markers",rclcpp::SensorDataQoS(),
             std::bind(&TurtleBot3Controller::marker_cb , this , std::placeholders::_1));
 
-            aruco_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
-            aruco_transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*aruco_tf_buffer_);
-            aruco_listen_timer_ = this->create_wall_timer(50ms, std::bind(&TurtleBot3Controller::aruco_listen_timer_cb_, this));
+            battery_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+            battery_transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*battery_tf_buffer_);
+            battery_listen_timer_ = this->create_wall_timer(50ms, std::bind(&TurtleBot3Controller::battery_listen_timer_cb_, this));
 
         }
         private:
@@ -95,12 +95,12 @@ namespace group22_final{
             std::vector<std::string> waypoints;
 
 
-            std::unique_ptr<tf2_ros::Buffer> aruco_tf_buffer_;
+            std::unique_ptr<tf2_ros::Buffer> battery_tf_buffer_;
             /*!< Transform listener object */
-            std::shared_ptr<tf2_ros::TransformListener> aruco_transform_listener_{nullptr};
+            std::shared_ptr<tf2_ros::TransformListener> battery_transform_listener_{nullptr};
             /*!< Wall timer object */
-            rclcpp::TimerBase::SharedPtr aruco_listen_timer_;
-            std::pair<float, float> aruco_listen_transform(const std::string &source_frame, const std::string &target_frame);
-            void aruco_listen_timer_cb_();
+            rclcpp::TimerBase::SharedPtr battery_listen_timer_;
+            std::pair<float, float> battery_listen_transform(const std::string &source_frame, const std::string &target_frame);
+            void battery_listen_timer_cb_();
     };
 }
