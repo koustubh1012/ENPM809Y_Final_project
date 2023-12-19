@@ -20,6 +20,7 @@ void group22_final::BatteryTfBroadcaster::camera_1_sub_cb(mage_msgs::msg::Advanc
         dynamic_transform_stamped.transform.rotation.z = msg.part_poses[0].pose.orientation.z;
         dynamic_transform_stamped.transform.rotation.w = msg.part_poses[0].pose.orientation.w;
         tf_broadcaster_battery_1_->sendTransform(dynamic_transform_stamped);
+        // camera_1_subscription_.reset();
     }
 }
 
@@ -38,6 +39,7 @@ void group22_final::BatteryTfBroadcaster::camera_2_sub_cb(mage_msgs::msg::Advanc
         dynamic_transform_stamped.transform.rotation.z = msg.part_poses[0].pose.orientation.z;
         dynamic_transform_stamped.transform.rotation.w = msg.part_poses[0].pose.orientation.w;
         tf_broadcaster_battery_1_->sendTransform(dynamic_transform_stamped);
+        // camera_2_subscription_.reset();
     }
 }
 
@@ -56,6 +58,7 @@ void group22_final::BatteryTfBroadcaster::camera_3_sub_cb(mage_msgs::msg::Advanc
         dynamic_transform_stamped.transform.rotation.z = msg.part_poses[0].pose.orientation.z;
         dynamic_transform_stamped.transform.rotation.w = msg.part_poses[0].pose.orientation.w;
         tf_broadcaster_battery_1_->sendTransform(dynamic_transform_stamped);
+        // camera_3_subscription_.reset();
     }
 }
 
@@ -74,6 +77,7 @@ void group22_final::BatteryTfBroadcaster::camera_4_sub_cb(mage_msgs::msg::Advanc
         dynamic_transform_stamped.transform.rotation.z = msg.part_poses[0].pose.orientation.z;
         dynamic_transform_stamped.transform.rotation.w = msg.part_poses[0].pose.orientation.w;
         tf_broadcaster_battery_1_->sendTransform(dynamic_transform_stamped);
+        // camera_4_subscription_.reset();
     }
 }
 
@@ -92,6 +96,7 @@ void group22_final::BatteryTfBroadcaster::camera_5_sub_cb(mage_msgs::msg::Advanc
         dynamic_transform_stamped.transform.rotation.z = msg.part_poses[0].pose.orientation.z;
         dynamic_transform_stamped.transform.rotation.w = msg.part_poses[0].pose.orientation.w;
         tf_broadcaster_battery_1_->sendTransform(dynamic_transform_stamped);
+        // camera_5_subscription_.reset();
     }
 }
 

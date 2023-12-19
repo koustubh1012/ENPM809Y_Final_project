@@ -42,8 +42,6 @@ std::pair<float, float> group22_final::TurtleBot3Controller::battery_listen_tran
     pose_out.position.x = t_stamped.transform.translation.x;
     pose_out.position.y = t_stamped.transform.translation.y;
     pose_out.orientation = t_stamped.transform.rotation;
-    // RCLCPP_INFO_STREAM(this->get_logger(), "X: " << pose_out.position.x);
-    // RCLCPP_INFO_STREAM(this->get_logger(), "Y: " << pose_out.position.y);
     return std::make_pair(pose_out.position.x, pose_out.position.y);
 }
 
