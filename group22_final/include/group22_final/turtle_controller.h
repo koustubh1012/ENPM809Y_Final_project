@@ -81,6 +81,15 @@ namespace group22_final{
                 struct wp wp4;
                 struct wp wp5;
             };
+            struct battery{
+                float x;
+                float y;
+            };
+            struct battery blue;
+            struct battery green;
+            struct battery red;
+            struct battery orange;
+            struct battery purple;
             struct marker aruco_zero_;
             struct marker aruco_one_;
             std::vector<std::string> waypoints;
@@ -91,7 +100,7 @@ namespace group22_final{
             std::shared_ptr<tf2_ros::TransformListener> aruco_transform_listener_{nullptr};
             /*!< Wall timer object */
             rclcpp::TimerBase::SharedPtr aruco_listen_timer_;
-            void aruco_listen_transform(const std::string &source_frame, const std::string &target_frame);
+            std::pair<float, float> aruco_listen_transform(const std::string &source_frame, const std::string &target_frame);
             void aruco_listen_timer_cb_();
     };
 }
