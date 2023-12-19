@@ -35,7 +35,7 @@ DESTINATION share/${PROJECT_NAME}/
 )
 
 add_executable(turtle_controller src/turtle_controller.cpp)
-ament_target_dependencies(turtle_controller rclcpp rclcpp ros2_aruco_interfaces tf2_ros geometry_msgs tf2 tf2_geometry_msgs)# nav_msgs mage_msgs)
+ament_target_dependencies(turtle_controller rclcpp rclcpp ros2_aruco_interfaces tf2_ros geometry_msgs tf2 tf2_geometry_msgs nav_msgs rclcpp_action rclcpp_components)# mage_msgs)
 
 install(TARGETS 
   turtle_controller

@@ -7,12 +7,17 @@
 #include <rosgraph_msgs/msg/clock.hpp>
 #include "tf2_ros/transform_broadcaster.h"
 #include "ros2_aruco_interfaces/msg/aruco_markers.hpp"
+#include "nav2_msgs/action/follow_waypoints.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"
 
 using namespace std::chrono_literals;
 
 namespace group22_final{
     class TurtleBot3Controller: public rclcpp::Node{
-        public:TurtleBot3Controller(std::string node_name):
+        public:
+        using NavigateToWaypoints = nav2_msgs::action::FollowWaypoints;
+        using GoalHandleWaypoints = rclcpp_action::ClientGoalHandle<NavigateToWaypoints>;
+        TurtleBot3Controller(std::string node_name):
         Node(node_name){
             this->declare_parameter("aruco_0.wp1.type", "battery");
             this->declare_parameter("aruco_0.wp1.color", "green");
@@ -65,7 +70,6 @@ namespace group22_final{
             battery_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             battery_transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*battery_tf_buffer_);
             battery_listen_timer_ = this->create_wall_timer(50ms, std::bind(&TurtleBot3Controller::battery_listen_timer_cb_, this));
-
         }
         private:
             rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr marker_sub_;
@@ -102,5 +106,7 @@ namespace group22_final{
             rclcpp::TimerBase::SharedPtr battery_listen_timer_;
             std::pair<float, float> battery_listen_transform(const std::string &source_frame, const std::string &target_frame);
             void battery_listen_timer_cb_();
+
+            rclcpp_action::Client<NavigateToWaypoints>::SharedPtr client_;
     };
 }
