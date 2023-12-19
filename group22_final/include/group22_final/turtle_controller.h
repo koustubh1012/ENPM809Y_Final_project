@@ -9,6 +9,7 @@
 #include "ros2_aruco_interfaces/msg/aruco_markers.hpp"
 #include "nav2_msgs/action/follow_waypoints.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
+#include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
 
 using namespace std::chrono_literals;
 
@@ -107,6 +108,13 @@ namespace group22_final{
             std::pair<float, float> battery_listen_transform(const std::string &source_frame, const std::string &target_frame);
             void battery_listen_timer_cb_();
 
+
             rclcpp_action::Client<NavigateToWaypoints>::SharedPtr client_;
+            rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr initial_pose_pub_;
+            void goal_response_callback(std::shared_future<GoalHandleWaypoints::SharedPtr> future);
+            void feedback_callback(GoalHandleWaypoints::SharedPtr, const std::shared_ptr<const NavigateToWaypoints::Feedback> feedback);
+            void result_callback(const GoalHandleWaypoints::WrappedResult& result);
+            void send_goal();
+            void set_initial_pose();
     };
 }
