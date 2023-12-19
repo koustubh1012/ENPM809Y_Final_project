@@ -25,6 +25,35 @@ void group22_final::TurtleBot3Controller::marker_cb(ros2_aruco_interfaces::msg::
 }
 
 
+// function to listen to aruco tranform
+void group22_final::TurtleBot3Controller::aruco_listen_transform(const std::string &source_frame, const std::string &target_frame)
+{
+    geometry_msgs::msg::TransformStamped t_stamped;
+    geometry_msgs::msg::Pose pose_out;
+    try
+    {
+        t_stamped = aruco_tf_buffer_->lookupTransform(source_frame, target_frame, tf2::TimePointZero, 10ms);
+    }
+    catch (const tf2::TransformException &ex)
+    {
+        RCLCPP_ERROR_STREAM(this->get_logger(), "Could not get transform between " << source_frame << " and " << target_frame << ": " << ex.what());
+        return;
+    }
+    pose_out.position.x = t_stamped.transform.translation.x;
+    pose_out.position.y = t_stamped.transform.translation.y;
+    pose_out.orientation = t_stamped.transform.rotation;
+    RCLCPP_INFO_STREAM(this->get_logger(), "X: " << pose_out.position.x);
+    RCLCPP_INFO_STREAM(this->get_logger(), "Y: " << pose_out.position.y);
+}
+
+
+// timer callback function for aruco marker detection
+void group22_final::TurtleBot3Controller::aruco_listen_timer_cb_()
+{
+    aruco_listen_transform("world", "battery_1_frame");
+}
+
+
 int main(int argc, char **argv){
     rclcpp::init(argc, argv);
     auto node = std::make_shared<group22_final::TurtleBot3Controller>("turtle_controller");
