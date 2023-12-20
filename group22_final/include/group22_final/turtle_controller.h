@@ -71,6 +71,20 @@ namespace group22_final{
             battery_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             battery_transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*battery_tf_buffer_);
             battery_listen_timer_ = this->create_wall_timer(50ms, std::bind(&TurtleBot3Controller::battery_listen_timer_cb_, this));
+
+            client_ = rclcpp_action::create_client<NavigateToWaypoints>(this, "follow_waypoints");
+            // initialize the publisher
+            initial_pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>( "initialpose", 10);
+            // set the initial pose for navigation
+            RCLCPP_INFO_STREAM(this->get_logger(), "Initialisisg");
+            set_initial_pose();
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+            RCLCPP_INFO_STREAM(this->get_logger(), "Initialised");
+            // pause for 5 seconds
+            RCLCPP_INFO_STREAM(this->get_logger(), "Sending goal xyz");
+            // send the goal
+            send_goal();
+            // RCLCPP_INFO_STREAM(this->get_logger(), "Goal Sent");
         }
         private:
             rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr marker_sub_;

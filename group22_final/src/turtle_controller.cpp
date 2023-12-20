@@ -73,6 +73,105 @@ void group22_final::TurtleBot3Controller::battery_listen_timer_cb_()
 }
 
 
+void group22_final::TurtleBot3Controller::set_initial_pose() {
+    auto message = geometry_msgs::msg::PoseWithCovarianceStamped();
+        message.header.frame_id = "map";
+    message.pose.pose.position.x = 1;
+    message.pose.pose.position.y = -1.617;
+    message.pose.pose.orientation.x = 0.0023258279310553356;
+    message.pose.pose.orientation.y = 0.0023451902769101034;
+    message.pose.pose.orientation.z = -0.7007043986843412;
+    message.pose.pose.orientation.w = 0.7134440666733559;
+    initial_pose_pub_->publish(message);
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+    RCLCPP_INFO_STREAM(this->get_logger(),"Robot Inntialised with X and Y as: "<< message.pose.pose.position.x << " "<< message.pose.pose.position.y);
+    
+}
+
+
+void group22_final::TurtleBot3Controller::send_goal() {
+    using namespace std::placeholders;
+    RCLCPP_INFO_STREAM(this->get_logger(), "Inside Send Goal");
+
+    if (!this->client_->wait_for_action_server()) {
+        RCLCPP_INFO_STREAM(this->get_logger(), "Inside Send Goal 1");
+        RCLCPP_ERROR(this->get_logger(),
+                 "Action server not available after waiting");
+        rclcpp::shutdown();
+    }
+    geometry_msgs::msg::PoseStamped pose;
+    pose.header.frame_id = "map";
+    pose.pose.position.x = 6.2;
+    pose.pose.position.y = -2.5;
+    pose.pose.position.z = 0.0;
+    pose.pose.orientation.x = 0.0;
+    pose.pose.orientation.y = 0.0;
+    pose.pose.orientation.z = 0.0;
+    pose.pose.orientation.w = 0.7787;
+
+    RCLCPP_INFO_STREAM(this->get_logger(), "Inside Send Goal 2");
+
+    auto goal_msg = NavigateToWaypoints::Goal();
+    goal_msg.poses.push_back(pose);
+
+    pose.header.frame_id = "map";
+    pose.pose.position.x = 1.6;
+    pose.pose.position.y = 2.5;
+    pose.pose.position.z = 0.0;
+    pose.pose.orientation.x = 0.0;
+    pose.pose.orientation.y = 0.0;
+    pose.pose.orientation.z = 0.0;
+    pose.pose.orientation.w = 0.7787;
+    goal_msg.poses.push_back(pose);
+
+    RCLCPP_INFO(this->get_logger(), "Sending goal");
+
+    auto send_goal_options = rclcpp_action::Client<NavigateToWaypoints>::SendGoalOptions();
+    send_goal_options.goal_response_callback = std::bind(&TurtleBot3Controller::goal_response_callback, this, _1);
+    send_goal_options.feedback_callback = std::bind(&TurtleBot3Controller::feedback_callback, this, _1, _2);
+    send_goal_options.result_callback = std::bind(&TurtleBot3Controller::result_callback, this, _1);
+
+    client_->async_send_goal(goal_msg, send_goal_options);
+    RCLCPP_INFO_STREAM(this->get_logger(), "Goal Sent");
+
+}
+
+void group22_final::TurtleBot3Controller::goal_response_callback(std::shared_future<GoalHandleWaypoints::SharedPtr> future) {
+    auto goal_handle = future.get();
+    if (!goal_handle) {
+        RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
+        rclcpp::shutdown();
+    } else {
+        RCLCPP_INFO(this->get_logger(),
+                    "Goal accepted by server, waiting for result");
+    }
+}
+
+    //===============================================
+void group22_final::TurtleBot3Controller::feedback_callback(GoalHandleWaypoints::SharedPtr, const std::shared_ptr<const NavigateToWaypoints::Feedback> feedback) {
+    RCLCPP_INFO_STREAM(this->get_logger(), "Robot is driving towards the goal: " << feedback->current_waypoint);
+}
+
+    //===============================================
+void group22_final::TurtleBot3Controller::result_callback(
+        const GoalHandleWaypoints::WrappedResult& result) {
+    switch (result.code) {
+        case rclcpp_action::ResultCode::SUCCEEDED:
+        break;
+        case rclcpp_action::ResultCode::ABORTED:
+        RCLCPP_ERROR(this->get_logger(), "Goal was aborted");
+        return;
+        case rclcpp_action::ResultCode::CANCELED:
+        RCLCPP_ERROR(this->get_logger(), "Goal was canceled");
+        return;
+        default:
+        RCLCPP_ERROR(this->get_logger(), "Unknown result code");
+        return;
+    }
+    rclcpp::shutdown();
+}
+
+
 int main(int argc, char **argv){
     rclcpp::init(argc, argv);
     auto node = std::make_shared<group22_final::TurtleBot3Controller>("turtle_controller");
