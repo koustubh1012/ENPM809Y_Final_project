@@ -63,27 +63,28 @@ namespace group22_final{
             aruco_one_.wp5.type = this->get_parameter("aruco_1.wp5.type").as_string();
             aruco_one_.wp5.color = this->get_parameter("aruco_1.wp5.color").as_string();
 
-            RCLCPP_INFO_STREAM_ONCE(this->get_logger(),"type: " << aruco_one_.wp1.type);
-
             marker_sub_ = this->create_subscription<ros2_aruco_interfaces::msg::ArucoMarkers>("aruco_markers",rclcpp::SensorDataQoS(),
             std::bind(&TurtleBot3Controller::marker_cb , this , std::placeholders::_1));
 
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+
             battery_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             battery_transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*battery_tf_buffer_);
-            battery_listen_timer_ = this->create_wall_timer(50ms, std::bind(&TurtleBot3Controller::battery_listen_timer_cb_, this));
+            // battery_listen_timer_ = this->create_wall_timer(50ms, std::bind(&TurtleBot3Controller::battery_listen_timer_cb_, this));
+
 
             client_ = rclcpp_action::create_client<NavigateToWaypoints>(this, "follow_waypoints");
             // initialize the publisher
             initial_pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>( "initialpose", 10);
             // set the initial pose for navigation
-            RCLCPP_INFO_STREAM(this->get_logger(), "Initialisisg");
+            RCLCPP_INFO_STREAM(this->get_logger(), "Initialising");
             set_initial_pose();
             std::this_thread::sleep_for(std::chrono::seconds(10));
             RCLCPP_INFO_STREAM(this->get_logger(), "Initialised");
             // pause for 5 seconds
             RCLCPP_INFO_STREAM(this->get_logger(), "Sending goal xyz");
             // send the goal
-            send_goal();
+            // send_goal();
             // RCLCPP_INFO_STREAM(this->get_logger(), "Goal Sent");
         }
         private:
@@ -100,18 +101,16 @@ namespace group22_final{
                 struct wp wp4;
                 struct wp wp5;
             };
-            struct battery{
-                float x;
-                float y;
-            };
-            struct battery blue;
-            struct battery green;
-            struct battery red;
-            struct battery orange;
-            struct battery purple;
             struct marker aruco_zero_;
             struct marker aruco_one_;
             std::vector<std::string> waypoints;
+            std::vector<std::string> bat_colors_;
+            std::vector<float> X;
+            std::vector<float> Y;
+            std::vector<float> goal_x;
+            std::vector<float> goal_y;
+            int a = 0;
+            int j = 0;
 
 
             std::unique_ptr<tf2_ros::Buffer> battery_tf_buffer_;
@@ -130,5 +129,6 @@ namespace group22_final{
             void result_callback(const GoalHandleWaypoints::WrappedResult& result);
             void send_goal();
             void set_initial_pose();
+            void set_goal_poses();
     };
 }
