@@ -20,6 +20,7 @@ namespace group22_final{
         using GoalHandleWaypoints = rclcpp_action::ClientGoalHandle<NavigateToWaypoints>;
         TurtleBot3Controller(std::string node_name):
         Node(node_name){
+            // declare the paramerters for aruco markers and set default values
             this->declare_parameter("aruco_0.wp1.type", "battery");
             this->declare_parameter("aruco_0.wp1.color", "green");
             this->declare_parameter("aruco_0.wp2.type", "battery");
@@ -30,6 +31,7 @@ namespace group22_final{
             this->declare_parameter("aruco_0.wp4.color", "purple");
             this->declare_parameter("aruco_0.wp5.type", "battery");
             this->declare_parameter("aruco_0.wp5.color", "blue");
+            
             this->declare_parameter("aruco_1.wp1.type", "battery");
             this->declare_parameter("aruco_1.wp1.color", "blue");
             this->declare_parameter("aruco_1.wp2.type", "battery");
@@ -41,6 +43,7 @@ namespace group22_final{
             this->declare_parameter("aruco_1.wp5.type", "battery");
             this->declare_parameter("aruco_1.wp5.color", "purple");
 
+            // set the parameters from the passed arguments or yaml file
             aruco_zero_.wp1.type = this->get_parameter("aruco_0.wp1.type").as_string();
             aruco_zero_.wp1.color = this->get_parameter("aruco_0.wp1.color").as_string();
             aruco_zero_.wp2.type = this->get_parameter("aruco_0.wp2.type").as_string();
@@ -70,22 +73,15 @@ namespace group22_final{
 
             battery_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             battery_transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*battery_tf_buffer_);
-            // battery_listen_timer_ = this->create_wall_timer(50ms, std::bind(&TurtleBot3Controller::battery_listen_timer_cb_, this));
-
 
             client_ = rclcpp_action::create_client<NavigateToWaypoints>(this, "follow_waypoints");
             // initialize the publisher
             initial_pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>( "initialpose", 10);
             // set the initial pose for navigation
-            RCLCPP_INFO_STREAM(this->get_logger(), "Initialising");
+            RCLCPP_INFO_STREAM(this->get_logger(), "Initialising... sleeping for 10 seconds");
             set_initial_pose();
             std::this_thread::sleep_for(std::chrono::seconds(10));
             RCLCPP_INFO_STREAM(this->get_logger(), "Initialised");
-            // pause for 5 seconds
-            RCLCPP_INFO_STREAM(this->get_logger(), "Sending goal xyz");
-            // send the goal
-            // send_goal();
-            // RCLCPP_INFO_STREAM(this->get_logger(), "Goal Sent");
         }
         private:
             rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr marker_sub_;
@@ -105,12 +101,8 @@ namespace group22_final{
             struct marker aruco_one_;
             std::vector<std::string> waypoints;
             std::vector<std::string> bat_colors_;
-            std::vector<float> X;
-            std::vector<float> Y;
             std::vector<float> goal_x;
             std::vector<float> goal_y;
-            int a = 0;
-            int j = 0;
 
 
             std::unique_ptr<tf2_ros::Buffer> battery_tf_buffer_;
@@ -129,6 +121,5 @@ namespace group22_final{
             void result_callback(const GoalHandleWaypoints::WrappedResult& result);
             void send_goal();
             void set_initial_pose();
-            void set_goal_poses();
     };
 }

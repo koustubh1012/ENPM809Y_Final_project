@@ -23,7 +23,6 @@ void group22_final::TurtleBot3Controller::marker_cb(ros2_aruco_interfaces::msg::
     RCLCPP_INFO_STREAM_ONCE(this->get_logger(), "Waypoint 4: " << waypoints[3]);
     RCLCPP_INFO_STREAM_ONCE(this->get_logger(), "Waypoint 5: " << waypoints[4]);
     RCLCPP_INFO_STREAM(this->get_logger(),"Inside marker_cb"<<waypoints.size());
-    // marker_sub_.reset();
     send_goal();
     RCLCPP_INFO_STREAM(this->get_logger(),"resetting");
     marker_sub_.reset();
@@ -55,24 +54,24 @@ void group22_final::TurtleBot3Controller::battery_listen_timer_cb_()
 {
     auto temp1 = battery_listen_transform("world", "battery_1_frame");
     bat_colors_.push_back("blue");
-    X.push_back(temp1.first);
-    Y.push_back(temp1.second);
+    goal_x.push_back(temp1.first);
+    goal_y.push_back(temp1.second);
     auto temp2 = battery_listen_transform("world", "battery_2_frame");
     bat_colors_.push_back("orange");
-    X.push_back(temp2.first);
-    Y.push_back(temp2.second);
+    goal_x.push_back(temp2.first);
+    goal_y.push_back(temp2.second);
     auto temp3 = battery_listen_transform("world", "battery_3_frame");
     bat_colors_.push_back("purple");
-    X.push_back(temp3.first);
-    Y.push_back(temp3.second);
+    goal_x.push_back(temp3.first);
+    goal_y.push_back(temp3.second);
     auto temp4 = battery_listen_transform("world", "battery_4_frame");
     bat_colors_.push_back("green");
-    X.push_back(temp4.first);
-    Y.push_back(temp4.second);
+    goal_x.push_back(temp4.first);
+    goal_y.push_back(temp4.second);
     auto temp5 = battery_listen_transform("world", "battery_5_frame");
     bat_colors_.push_back("red");
-    X.push_back(temp5.first);
-    Y.push_back(temp5.second);
+    goal_x.push_back(temp5.first);
+    goal_y.push_back(temp5.second);
     RCLCPP_INFO_STREAM(this->get_logger(),"Inside batter_lisetene" << bat_colors_.size());
 }
 
@@ -88,7 +87,7 @@ void group22_final::TurtleBot3Controller::set_initial_pose() {
     message.pose.pose.orientation.w = 0.7134440666733559;
     initial_pose_pub_->publish(message);
     RCLCPP_INFO_STREAM(this->get_logger(),"Waiting for 10 seconds");   
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    // std::this_thread::sleep_for(std::chrono::seconds(10));
     RCLCPP_INFO_STREAM(this->get_logger(),"Robot Initialised with X and Y as: "<< message.pose.pose.position.x << " "<< message.pose.pose.position.y);
 }
 
@@ -120,8 +119,8 @@ void group22_final::TurtleBot3Controller::send_goal() {
     for(long unsigned int i = 0; i < waypoints.size(); i++){
         for (long unsigned int j = 0; j < bat_colors_.size(); j++){
             if(waypoints.at(i) == bat_colors_.at(j)){
-                pose.pose.position.x = X.at(j);
-                pose.pose.position.y = Y.at(j);
+                pose.pose.position.x = goal_x.at(j);
+                pose.pose.position.y = goal_y.at(j);
                 goal_msg.poses.push_back(pose);
                 RCLCPP_INFO_STREAM(this->get_logger(),"pushed back "<<waypoints[i]);
             }
@@ -183,9 +182,9 @@ void group22_final::TurtleBot3Controller::result_callback(
 //     RCLCPP_INFO_STREAM(this->get_logger(), "Waypoint: " << waypoints[a]);
 //     // do{
 //     //     if(waypoints[a] == bat_colors_[j]){
-//     //         // pose.pose.position.x = X[j];
+//     //         // pose.pose.position.x = goal_x[j];
 //     //         // pose.pose.position.y = Y[j];
-//     //         RCLCPP_INFO_STREAM(this->get_logger(), "X and Y: " << X[j] <<" "<<Y[j]);
+//     //         RCLCPP_INFO_STREAM(this->get_logger(), "goal_x and Y: " << goal_x[j] <<" "<<goal_y[j]);
 //     //     }
 //     // j = j + 1;
 //     // // goal_msg.poses.push_back(pose);   
