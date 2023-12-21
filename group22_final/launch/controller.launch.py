@@ -16,7 +16,14 @@ def generate_launch_description():
         executable="turtle_controller",
         parameters=[parameter_file]
     )
+
+    battery_tf_broadcaster = Node(
+        package="group22_final",
+        executable="battery_tf_broadcaster",
+        parameters=[{'use_sim_time': True}]
+    )
     
     ld = LaunchDescription()
     ld.add_action(aruco_pub)
+    ld.add_action(battery_tf_broadcaster)
     return ld
