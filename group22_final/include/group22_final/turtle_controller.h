@@ -66,9 +66,12 @@ namespace group22_final{
             aruco_one_.wp5.type = this->get_parameter("aruco_1.wp5.type").as_string();
             aruco_one_.wp5.color = this->get_parameter("aruco_1.wp5.color").as_string();
 
+            // create subscription for reading aruco markers
             marker_sub_ = this->create_subscription<ros2_aruco_interfaces::msg::ArucoMarkers>("aruco_markers",rclcpp::SensorDataQoS(),
             std::bind(&TurtleBot3Controller::marker_cb , this , std::placeholders::_1));
 
+            // sleep for 10 seconds
+            RCLCPP_INFO_STREAM(this->get_logger(), "Simulation will start initialising in 10 sec");
             std::this_thread::sleep_for(std::chrono::seconds(10));
 
             battery_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
@@ -77,19 +80,23 @@ namespace group22_final{
             client_ = rclcpp_action::create_client<NavigateToWaypoints>(this, "follow_waypoints");
             // initialize the publisher
             initial_pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>( "initialpose", 10);
-            // set the initial pose for navigation
             RCLCPP_INFO_STREAM(this->get_logger(), "Initialising... sleeping for 10 seconds");
+            // set the initial pose for navigation
             set_initial_pose();
             std::this_thread::sleep_for(std::chrono::seconds(10));
             RCLCPP_INFO_STREAM(this->get_logger(), "Initialised");
         }
         private:
+            // create subscription for aruco markers
             rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr marker_sub_;
+            // marker callback function
             void marker_cb(ros2_aruco_interfaces::msg::ArucoMarkers msg);
+            // structure for defining waypoint
             struct wp{
                 std::string type;
                 std::string color;
             };
+            // structure for defining each marker
             struct marker{
                 struct wp wp1;
                 struct wp wp2;
@@ -97,12 +104,13 @@ namespace group22_final{
                 struct wp wp4;
                 struct wp wp5;
             };
-            struct marker aruco_zero_;
-            struct marker aruco_one_;
-            std::vector<std::string> waypoints;
-            std::vector<std::string> bat_colors_;
-            std::vector<float> goal_x;
-            std::vector<float> goal_y;
+
+            struct marker aruco_zero_;                  // create structure to store parameters from type zero marker
+            struct marker aruco_one_;                   // create structure to store parameters from type one markers
+            std::vector<std::string> waypoints;         // vector to store the waypoints from aruco markers
+            std::vector<std::string> bat_colors_;       // vector to store battery colors detected from camera
+            std::vector<float> goal_x;                  // vector to store battery x coordinates from camera
+            std::vector<float> goal_y;                  // vector to store battery y coordinates from camera
 
 
             std::unique_ptr<tf2_ros::Buffer> battery_tf_buffer_;
