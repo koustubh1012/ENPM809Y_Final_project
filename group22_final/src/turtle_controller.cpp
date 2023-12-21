@@ -40,8 +40,8 @@ std::pair<float, float> group22_final::TurtleBot3Controller::battery_listen_tran
     }
     catch (const tf2::TransformException &ex)
     {
-        // RCLCPP_ERROR_STREAM(this->get_logger(), "Could not get transform between " << source_frame << " and " << target_frame << ": " << ex.what());
-        // return;
+        RCLCPP_ERROR_STREAM(this->get_logger(), "Could not get transform between " << source_frame << " and " << target_frame << ": " << ex.what());
+        return std::make_pair(0.0, 0.0);
     }
     pose_out.position.x = t_stamped.transform.translation.x;
     pose_out.position.y = t_stamped.transform.translation.y;
@@ -50,7 +50,7 @@ std::pair<float, float> group22_final::TurtleBot3Controller::battery_listen_tran
 }
 
 
-void group22_final::TurtleBot3Controller::battery_listen_timer_cb_()
+void group22_final::TurtleBot3Controller::battery_listen_cb_()
 {
     auto temp1 = battery_listen_transform("world", "battery_1_frame");
     bat_colors_.push_back("blue");
@@ -86,15 +86,13 @@ void group22_final::TurtleBot3Controller::set_initial_pose() {
     message.pose.pose.orientation.z = -0.7007043986843412;
     message.pose.pose.orientation.w = 0.7134440666733559;
     initial_pose_pub_->publish(message);
-    RCLCPP_INFO_STREAM(this->get_logger(),"Waiting for 10 seconds");   
-    // std::this_thread::sleep_for(std::chrono::seconds(10));
-    RCLCPP_INFO_STREAM(this->get_logger(),"Robot Initialised with X and Y as: "<< message.pose.pose.position.x << " "<< message.pose.pose.position.y);
+    RCLCPP_INFO_STREAM(this->get_logger(),"Robot Initialised at X: "<< message.pose.pose.position.x << " and Y :"<< message.pose.pose.position.y);
 }
 
 
 void group22_final::TurtleBot3Controller::send_goal() {
     using namespace std::placeholders;
-    battery_listen_timer_cb_();
+    battery_listen_cb_();
     RCLCPP_INFO_STREAM(this->get_logger(), "Inside Send Goal");
 
     if (!this->client_->wait_for_action_server()) {

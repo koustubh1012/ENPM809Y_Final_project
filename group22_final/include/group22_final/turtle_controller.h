@@ -80,9 +80,9 @@ namespace group22_final{
             client_ = rclcpp_action::create_client<NavigateToWaypoints>(this, "follow_waypoints");
             // initialize the publisher
             initial_pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>( "initialpose", 10);
-            RCLCPP_INFO_STREAM(this->get_logger(), "Initialising... sleeping for 10 seconds");
             // set the initial pose for navigation
             set_initial_pose();
+            RCLCPP_INFO_STREAM(this->get_logger(), "Initialising... sleeping for 10 seconds");
             std::this_thread::sleep_for(std::chrono::seconds(10));
             RCLCPP_INFO_STREAM(this->get_logger(), "Initialised");
         }
@@ -116,18 +116,22 @@ namespace group22_final{
             std::unique_ptr<tf2_ros::Buffer> battery_tf_buffer_;
             /*!< Transform listener object */
             std::shared_ptr<tf2_ros::TransformListener> battery_transform_listener_{nullptr};
-            /*!< Wall timer object */
-            rclcpp::TimerBase::SharedPtr battery_listen_timer_;
-            std::pair<float, float> battery_listen_transform(const std::string &source_frame, const std::string &target_frame);
-            void battery_listen_timer_cb_();
 
+            // function to listen to tranform between map and battery frame
+            std::pair<float, float> battery_listen_transform(const std::string &source_frame, const std::string &target_frame);
+            //function to call the listen tranform function
+            void battery_listen_cb_();
 
             rclcpp_action::Client<NavigateToWaypoints>::SharedPtr client_;
             rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr initial_pose_pub_;
+
             void goal_response_callback(std::shared_future<GoalHandleWaypoints::SharedPtr> future);
             void feedback_callback(GoalHandleWaypoints::SharedPtr, const std::shared_ptr<const NavigateToWaypoints::Feedback> feedback);
             void result_callback(const GoalHandleWaypoints::WrappedResult& result);
-            void send_goal();
-            void set_initial_pose();
+            
+            // function to send the goal poses to the robot
+            void send_goal();                          
+            // function to set intial pose of the tobot 
+            void set_initial_pose();                   
     };
 }
