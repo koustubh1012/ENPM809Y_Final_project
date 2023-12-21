@@ -1,3 +1,13 @@
+/**
+ * @file turtle_controller.h
+ * @author FNU Koustubh
+ * @brief 
+ * @version 0.1
+ * @date 2023-12-20
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #pragma once
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist.hpp>
@@ -12,6 +22,27 @@
 #include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
 
 using namespace std::chrono_literals;
+
+/**
+ * @brief   This class is used to control the turtlebot3
+ * @param   marker_sub_ : Subscription to the aruco markers
+ * @param   battery_tf_buffer_ : Buffer to store the transform between map and battery frame
+ * @param   battery_transform_listener_ : Listener object to listen to the transform between map and battery frame
+ * @param   client_ : Client object to send the goal poses to the robot
+ * @param   initial_pose_pub_ : Publisher object to set the initial pose of the robot
+ * @param   aruco_zero_ : Structure to store the parameters from type zero marker
+ * @param   aruco_one_ : Structure to store the parameters from type one markers
+ * @param   waypoints : Vector to store the waypoints from aruco markers
+ * @param   bat_colors_ : Vector to store battery colors detected from camera
+ * @param   goal_x : Vector to store battery x coordinates from camera
+ * @param   goal_y : Vector to store battery y coordinates from camera
+ * @param   battery_tf_buffer_ : Buffer to store the transform between map and battery frame
+ * @param   battery_transform_listener_ : Listener object to listen to the transform between map and battery frame
+ * @details This class is used to control the turtlebot3. It subscribes to the aruco markers and stores the waypoints from the markers. It also subscribes to the camera to detect the battery and send the goal poses to the robot. It also sets the initial pose of the robot.
+ * 
+ *
+ * 
+ */
 
 namespace group22_final{
     class TurtleBot3Controller: public rclcpp::Node{
@@ -73,7 +104,14 @@ namespace group22_final{
             // sleep for 10 seconds
             RCLCPP_INFO_STREAM(this->get_logger(), "Simulation will start initialising in 10 sec");
             std::this_thread::sleep_for(std::chrono::seconds(10));
-
+/**
+ * @brief   TF Listener for the battery
+ * @param   battery_tf_buffer_ : Buffer to store the transform between map and battery frame
+ * @param   battery_transform_listener_ : Listener object to listen to the transform between map and battery frame
+ * @param   initail_pose_pub_ : Publisher object to set the initial pose of the robot
+ * 
+ * 
+ */
             battery_tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             battery_transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*battery_tf_buffer_);
 
@@ -87,6 +125,22 @@ namespace group22_final{
             RCLCPP_INFO_STREAM(this->get_logger(), "Initialised");
         }
         private:
+
+/**
+ * @brief   Callback function for the aruco markers
+ * @param   msg : Message from the aruco markers
+ * @param   waypoints : Vector to store the waypoints from aruco markers
+ * @param   bat_colors_ : Vector to store battery colors detected from camera
+ * @param  goal_x : Vector to store battery x coordinates from camera
+ * @param  goal_y : Vector to store battery y coordinates from camera
+ * @param  struct marker wp1 : Structure to store the parameters from type zero marker
+ * @param  struct marker wp2 : Structure to store the parameters from type zero marker
+ * @param  struct marker wp3 : Structure to store the parameters from type zero marker
+ * @param  struct marker wp4 : Structure to store the parameters from type zero marker
+ * @param  struct marker wp5 : Structure to store the parameters from type zero marker
+ * 
+ * 
+ */
             // create subscription for aruco markers
             rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr marker_sub_;
             // marker callback function
@@ -112,7 +166,13 @@ namespace group22_final{
             std::vector<float> goal_x;                  // vector to store battery x coordinates from camera
             std::vector<float> goal_y;                  // vector to store battery y coordinates from camera
 
-
+/**
+ * @brief   Callback function for the logical camera 
+ * @param   msg : Message from the logical camera 
+ * @param   tf_broadcaster_battery_ : Broadcaster object
+ * @param  battery_tf_buffer_ : Buffer to store the transform between map and battery frame
+ * 
+ */
             std::unique_ptr<tf2_ros::Buffer> battery_tf_buffer_;
             /*!< Transform listener object */
             std::shared_ptr<tf2_ros::TransformListener> battery_transform_listener_{nullptr};
@@ -121,7 +181,17 @@ namespace group22_final{
             std::pair<float, float> battery_listen_transform(const std::string &source_frame, const std::string &target_frame);
             //function to call the listen tranform function
             void battery_listen_cb_();
-
+/**
+ * @brief  Callback function for the logical camera 
+ * @param goal_response_callback
+ * @param feedback_callback
+ * @param result_callback
+ * @param client_ : Client object to send the goal poses to the robot
+ * @param initial_pose_pub_ : Publisher object to set the initial pose of the robot
+ * 
+ * 
+ * 
+ */
             rclcpp_action::Client<NavigateToWaypoints>::SharedPtr client_;
             rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr initial_pose_pub_;
 
