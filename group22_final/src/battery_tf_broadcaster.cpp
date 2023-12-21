@@ -6,6 +6,7 @@
 
 using namespace std::chrono_literals;
 
+// callback funtion for camera1 subcription
 void group22_final::BatteryTfBroadcaster::camera_1_sub_cb(mage_msgs::msg::AdvancedLogicalCameraImage msg){
     if(!msg.part_poses.empty()){
         geometry_msgs::msg::TransformStamped dynamic_transform_stamped;
@@ -24,7 +25,7 @@ void group22_final::BatteryTfBroadcaster::camera_1_sub_cb(mage_msgs::msg::Advanc
     }
 }
 
-
+// callback funtion for camera2 subcription
 void group22_final::BatteryTfBroadcaster::camera_2_sub_cb(mage_msgs::msg::AdvancedLogicalCameraImage msg){
     if(!msg.part_poses.empty()){
         geometry_msgs::msg::TransformStamped dynamic_transform_stamped;
@@ -43,7 +44,7 @@ void group22_final::BatteryTfBroadcaster::camera_2_sub_cb(mage_msgs::msg::Advanc
     }
 }
 
-
+// callback funtion for camera3 subcription
 void group22_final::BatteryTfBroadcaster::camera_3_sub_cb(mage_msgs::msg::AdvancedLogicalCameraImage msg){
     if(!msg.part_poses.empty()){
         geometry_msgs::msg::TransformStamped dynamic_transform_stamped;
@@ -62,7 +63,7 @@ void group22_final::BatteryTfBroadcaster::camera_3_sub_cb(mage_msgs::msg::Advanc
     }
 }
 
-
+// callback funtion for camera4 subcription
 void group22_final::BatteryTfBroadcaster::camera_4_sub_cb(mage_msgs::msg::AdvancedLogicalCameraImage msg){
     if(!msg.part_poses.empty()){
         geometry_msgs::msg::TransformStamped dynamic_transform_stamped;
@@ -81,7 +82,7 @@ void group22_final::BatteryTfBroadcaster::camera_4_sub_cb(mage_msgs::msg::Advanc
     }
 }
 
-
+// callback funtion for camera5 subcription
 void group22_final::BatteryTfBroadcaster::camera_5_sub_cb(mage_msgs::msg::AdvancedLogicalCameraImage msg){
     if(!msg.part_poses.empty()){
         geometry_msgs::msg::TransformStamped dynamic_transform_stamped;

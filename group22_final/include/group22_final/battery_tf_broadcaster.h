@@ -15,20 +15,25 @@ namespace group22_final{
         public:
         BatteryTfBroadcaster(std::string node_name) : Node(node_name)
         {
-            // parameter to decide whether to execute the broadcaster or not
             RCLCPP_INFO(this->get_logger(), "Battery Broadcaster Started");
+
+            // create subscription for camera1
             camera_1_subscription_ = this->create_subscription<mage_msgs::msg::AdvancedLogicalCameraImage>("mage/camera1/image",rclcpp::SensorDataQoS(),
             std::bind(&BatteryTfBroadcaster::camera_1_sub_cb , this , std::placeholders::_1));
 
+            // create subscription for camera2
             camera_2_subscription_ = this->create_subscription<mage_msgs::msg::AdvancedLogicalCameraImage>("mage/camera2/image",rclcpp::SensorDataQoS(),
             std::bind(&BatteryTfBroadcaster::camera_2_sub_cb , this , std::placeholders::_1));
 
+            // create subscription for camera3
             camera_3_subscription_ = this->create_subscription<mage_msgs::msg::AdvancedLogicalCameraImage>("mage/camera3/image",rclcpp::SensorDataQoS(),
             std::bind(&BatteryTfBroadcaster::camera_3_sub_cb , this , std::placeholders::_1));
 
+            // create subscription for camera4
             camera_4_subscription_ = this->create_subscription<mage_msgs::msg::AdvancedLogicalCameraImage>("mage/camera4/image",rclcpp::SensorDataQoS(),
             std::bind(&BatteryTfBroadcaster::camera_4_sub_cb , this , std::placeholders::_1));
 
+            // create subscription for camera5
             camera_5_subscription_ = this->create_subscription<mage_msgs::msg::AdvancedLogicalCameraImage>("mage/camera5/image",rclcpp::SensorDataQoS(),
             std::bind(&BatteryTfBroadcaster::camera_5_sub_cb , this , std::placeholders::_1));
 
@@ -52,5 +57,5 @@ namespace group22_final{
         std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_battery_;
         // rclcpp::TimerBase::SharedPtr tf_timer_battery_;
 
-    };
-}
+    };// class BatteryTfBroadcaster
+} // namespace group22_final
